@@ -1,4 +1,4 @@
-def fcfs(entradas):
+def fcfs(entradas,verbose):
 	fila=[x[:] for x in entradas]
 	tempo_atual=0
 	retorno=[]
@@ -9,9 +9,13 @@ def fcfs(entradas):
 		resposta.append(tempo_atual-int(processo[1]))
 		tempo_atual+=int(processo[0])
 		retorno.append(tempo_atual-int(processo[1]))
+		if(verbose):
+			print("Executando : " + str(processo))
+	if(verbose):
+			print("FCFS " + str(retorno)+" "+str(resposta)+" "+str(espera))
 	return (sum(retorno) / float(len(retorno))),(sum(resposta) / float(len(resposta))),(sum(resposta) / float(len(resposta)))
 #####################################################################################
-def sjf(entradas,preempcao):
+def sjf(entradas,preempcao,verbose):
 	fila=[x[:] for x in entradas]
 	Nentradas=len(entradas)
 	tempo_atual=0
@@ -31,7 +35,8 @@ def sjf(entradas,preempcao):
 						tempo_atual+=1
 						continue
 				pronto=sorted(pronto, key=lambda tup: tup[0])
-				print(pronto)
+				if(verbose):
+					print("Fila de Prontos : " + str(pronto))
 				if(pronto[0][2]>0):
 					resposta.append(tempo_atual-int(pronto[0][1]))
 					pronto[0][2]=pronto[0][2]*-1
@@ -56,6 +61,8 @@ def sjf(entradas,preempcao):
 					else:
 						tempo_atual+=1
 						continue
+				if(verbose):
+					print("Fila de Prontos : " + str(pronto))
 				if(pronto[0][2]>0):
 					resposta.append(tempo_atual-int(pronto[0][1]))
 					pronto[0][2]=pronto[0][2]*-1
@@ -66,9 +73,11 @@ def sjf(entradas,preempcao):
 					espera.append(tempo_atual-int(pronto[0][1])+pronto[0][2])
 					pronto.pop(0)
 					pronto=sorted(pronto, key=lambda tup: tup[0])
+	if(verbose):
+			print("SJF Retornos:" + str(retorno)+" Respostas:"+str(resposta)+" Esperas:"+str(espera))
 	return (sum(retorno) / float(len(retorno))),(sum(resposta) / float(len(resposta))),(sum(espera) / float(len(espera)))
 #####################################################################################
-def rr(entradas,quantum):
+def rr(entradas,quantum,verbose):
 	fila=[x[:] for x in entradas]
 	Nentradas=len(entradas)
 	tempo_atual=0
@@ -92,7 +101,8 @@ def rr(entradas,quantum):
 						continue
 			elif(terminou==0):
 				pronto.append(primeirodafila)
-			print(pronto)
+			if(verbose):
+					print("Fila de Prontos : " + str(pronto))
 			if(pronto[0][2]>0):
 				resposta.append(tempo_atual-int(pronto[0][1]))
 				pronto[0][2]=pronto[0][2]*-1
@@ -109,6 +119,8 @@ def rr(entradas,quantum):
 					terminou=0
 			if(terminou==0):
 				primeirodafila=pronto.pop(0)
+	if(verbose):
+			print("RR Retornos:" + str(retorno)+" Respostas:"+str(resposta)+" Esperas:"+str(espera))
 	return (sum(retorno) / float(len(retorno))),(sum(resposta) / float(len(resposta))),(sum(espera) / float(len(espera)))
 
 
@@ -120,11 +132,25 @@ for x in f1:
 	chegada,duracao=x.split()
 	entradas.append([int(duracao),int(chegada),int(duracao)])
 entradas = sorted(entradas, key=lambda tup: tup[1])
-retorno,resposta,espera=fcfs(entradas)
-print("FCFS " + str(retorno)+" "+str(resposta)+" "+str(espera))
-retorno,resposta,espera=sjf(entradas,False)
-print("SJF " + str(retorno)+" "+str(resposta)+" "+str(espera))
-retorno,resposta,espera=rr(entradas,2)
-print("RR " + str(retorno)+" "+str(resposta)+" "+str(espera))
+printar=0
+retorno,resposta,espera=fcfs(entradas,False)
+if(printar!=0):
+	print("FCFS " + str(retorno)+" "+str(resposta)+" "+str(espera))
+else:
+	saida = open("saida.txt","w")
+	saida.write("FCFS " + str(retorno)+" "+str(resposta)+" "+str(espera)+"\n")
+retorno,resposta,espera=sjf(entradas,False,False)
+if(printar!=0):
+	print("SJF " + str(retorno)+" "+str(resposta)+" "+str(espera))
+else:
+	saida.write("SJF " + str(retorno)+" "+str(resposta)+" "+str(espera)+"\n")
+retorno,resposta,espera=rr(entradas,2,True)
+if(printar!=0):
+	print("RR " + str(retorno)+" "+str(resposta)+" "+str(espera))
+else:
+	saida.write("RR " + str(retorno)+" "+str(resposta)+" "+str(espera)+"\n")
+	saida.close()
+
+
 
 
